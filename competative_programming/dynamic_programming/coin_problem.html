@@ -8,6 +8,7 @@
 <p>To solve this you create an array <code>vals[i]</code> which will hold the minimum amount of coins to sum to value <code>i</code>. <br>
 Clearly adding a coin of value <code>c</code> to the sum <code>i-c</code> gets <code>i</code> and uses 1 more coin so <code>vals[i]=vals[i-c]+1</code>.<br>
 Using <code>vals[0] = 0</code>, as the way to get a value of 0 is using coins, as a base case, iterate first over each possible sum and than over each coin, applying the recursive relation to acheive a solution for all numbers less than or equal to <code>t</code>.</p>
+<h3>Implementation</h3>
 <pre><code class='language-cpp' lang='cpp'>//The below solution uses pull DP
 
 //minimum amount of coins
