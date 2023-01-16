@@ -21,7 +21,7 @@
 title: Pieces
 #email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Mosty uninformed writings about whatever comes to mind
+  mosty uninformed writings about whatever comes to mind
 baseurl: "" # the subpath of your site, e.g. /blog
 url: https://jku20.github.io # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
