@@ -6,6 +6,7 @@ html {
 
 body {
     font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 20px;
     background-color: #303030;
     display: grid;
     gap: 1em;
@@ -20,6 +21,7 @@ body {
     background-color: #262626;
     padding: 1em;
     float:left;
+    line-height: 1.4;
 }
 
 #side div#icon {
