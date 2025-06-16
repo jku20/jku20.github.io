@@ -3,21 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Happiness App</title>
-<style>
-input[type='radio'] { 
-    transform: scale(6); 
-    -webkit-transform:scale(6, 6);
-    width: 100px;
-    display: inline-block;
-}
-.box-right {
-  float: right;
-  margin: 1em;
-}
-.box-left {
-  float: left;
-}
-</style>
 </head>
 <body>
   <div id="login">
@@ -37,45 +22,45 @@ input[type='radio'] {
   <div id="content">
     <form id="send-happiness" onsubmit="return false">
       <fieldset>
-        <legend><h1>answer with heart</h1></legend>
-        <div class="box-left">
-          <label for="choice1"><h1>1</h1></label>
+        <legend>answer with heart</legend>
+        <div>
           <input type="radio" id="choice1" name="happiness" value=1>
+          <label for="choice1">1</label>
 
-          <label for="choice2"><h1>2</h1></label>
           <input type="radio" id="choice2" name="happiness" value=2>
+          <label for="choice2">2</label>
 
-          <label for="choice3"><h1>3</h1></label>
           <input type="radio" id="choice3" name="happiness" value=3>
+          <label for="choice3">3</label>
 
-          <label for="choice4"><h1>4</h1></label>
           <input type="radio" id="choice4" name="happiness" value=4>
+          <label for="choice4">4</label>
 
-          <label for="choice5"><h1>5</h1></label>
           <input type="radio" id="choice5" name="happiness" value=5>
+          <label for="choice5">5</label>
 
-          <label for="choice6"><h1>6</h1></label>
           <input type="radio" id="choice6" name="happiness" value=6>
+          <label for="choice6">6</label>
 
-          <label for="choice7"><h1>7</h1></label>
           <input type="radio" id="choice7" name="happiness" value=7>
+          <label for="choice7">7</label>
 
-          <label for="choice8"><h1>8</h1></label>
           <input type="radio" id="choice8" name="happiness" value=8>
+          <label for="choice8">8</label>
 
-          <label for="choice9"><h1>9</h1></label>
           <input type="radio" id="choice9" name="happiness" value=9>
+          <label for="choice9">9</label>
 
-          <label for="choice10"><h1>10</h1></label>
           <input type="radio" id="choice10" name="happiness" value=10>
+          <label for="choice10">10</label>
         </div>
-        <div class="box-right">
-          <label for="comment"><h1>and speak</h1></label>
+        <div>
+          <label for="comment">and speak</label>
           <br>
           <textarea id="comment" name="comment" rows="10" cols="47"></textarea>
         </div>
-        <div class="box-right">
-          <button type="submit"><h1>transmit</h1></button>
+        <div>
+          <button type="submit">transmit</button>
         </div>
 
         <pre id="submission"></pre>
