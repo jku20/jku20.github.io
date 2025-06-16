@@ -3,9 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <title>Happiness App</title>
-  <script src="elm.min.js"></script>
 </head>
 <body>
-  <script>var app = Elm.Main.init();</script>
+  <div id="login">
+    <form id="login-form" onsubmit="return false">
+      <table>
+        <tr><td><label for="username">username: </label>
+            <td><input type="text" id="username" name="username">
+        <tr><td><label for="password">password: </label>
+            <td><input type="password" id="password" name="password">
+        <tr><td>
+      </table>
+      <div>
+        <button type="submit">present</button>
+      </div>
+    </form>
+  </div>
+  <div id="content">
+    <form id="send-happiness" onsubmit="return false">
+      <fieldset>
+        <legend>answer with heart</legend>
+        <div>
+          <input type="radio" id="choice1" name="happiness" value=1>
+          <label for="choice1">1</label>
+
+          <input type="radio" id="choice2" name="happiness" value=2>
+          <label for="choice2">2</label>
+
+          <input type="radio" id="choice3" name="happiness" value=3>
+          <label for="choice3">3</label>
+
+          <input type="radio" id="choice4" name="happiness" value=4>
+          <label for="choice4">4</label>
+
+          <input type="radio" id="choice5" name="happiness" value=5>
+          <label for="choice5">5</label>
+
+          <input type="radio" id="choice6" name="happiness" value=6>
+          <label for="choice6">6</label>
+
+          <input type="radio" id="choice7" name="happiness" value=7>
+          <label for="choice7">7</label>
+
+          <input type="radio" id="choice8" name="happiness" value=8>
+          <label for="choice8">8</label>
+
+          <input type="radio" id="choice9" name="happiness" value=9>
+          <label for="choice9">9</label>
+
+          <input type="radio" id="choice10" name="happiness" value=10>
+          <label for="choice10">10</label>
+        </div>
+        <div>
+          <label for="comment">and speak</label>
+          <br>
+          <textarea id="comment" name="comment" rows="10" cols="47"></textarea>
+        </div>
+        <div>
+          <button type="submit">transmit</button>
+        </div>
+
+        <pre id="submission"></pre>
+      </fieldset>
+    </form>
+  </div>
+  <script type="text/javascript">
+    let token = localStorage.getItem("token");
+    if (!token) {
+      document.getElementById("content").style.display = 'none';
+      document.getElementById("login").style.display = 'block';
+    } else {
+      document.getElementById("content").style.display = 'block';
+      document.getElementById("login").style.display = 'none';
+    }
+  </script>
+  <script src="request.js"></script>
 </body>
 </html>
