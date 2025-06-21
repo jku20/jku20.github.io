@@ -12,7 +12,18 @@
   <div id="main">
     <h2>Clang</h2>
     <p>
-    It's a bit of a mess. Always will be. Kind of comes from C++ being a mess. Go look at <a href="https://clang.llvm.org/docs/index.html">this</a>. The internals manual is probably a decent place to start.
+        It's a bit of a mess. Always will be. Kind of comes from C++ being a mess. Go look at <a href="https://clang.llvm.org/docs/index.html">this</a>. The internals manual is probably a decent place to start.
+    </p>
+    <h3>libclang</h3>
+    <p>
+        This is the C api for Clang. It exists, but is limited in what parts of the AST are exposed. Despite that, it is sufficient for reading enough of the AST to do a lot. Tools like rust-bindgen are built on it. 
+    </p>
+    <p>
+        libclang at it's core is really simple, but can be hard to immediately grasp because (that I know of) there isn't a good explanation of how the different parts of the api fit together. And I'm not experienced enought to get it right away. This is hopefully a "big ideas" text that me 2 weeks ago as of writing, or me having forgotten everything later, would find helpful.
+    </p>
+    <h4>Prereqs</h4>
+    <p>
+        libclang is for accessing the clang ast (well, clang abstract syntax digraph, because it can be cyclic), but it's a bad way to learn how the ast works. libclang conflates and leaves out the various node types in the clang ast. Read <a href="https://clang.llvm.org/docs/InternalsManual.html#the-ast-library">the section on the ast library in the internals manual</a> and take a look at <a href="https://clang.llvm.org/docs/IntroductionToTheClangAST.html>this page/talk</a> for an okay introduction. libclang uses this api to traverse the nodes in the ast and get information on the nodes which currently have a representation in C.
     </p>
   </div>
 </body>
