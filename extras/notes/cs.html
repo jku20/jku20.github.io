@@ -23,7 +23,11 @@
     </p>
     <h4>Prereqs</h4>
     <p>
-        libclang is for accessing the clang ast (well, clang abstract syntax digraph, because it can be cyclic), but it's a bad way to learn how the ast works. libclang conflates and leaves out the various node types in the clang ast. Read <a href="https://clang.llvm.org/docs/InternalsManual.html#the-ast-library">the section on the ast library in the internals manual</a> and take a look at <a href="https://clang.llvm.org/docs/IntroductionToTheClangAST.html">this page/talk</a> for an okay introduction. libclang uses this api to traverse the nodes in the ast and get information on the nodes which currently have a representation in C.
+        libclang is for accessing the clang ast (well, clang abstract syntax digraph, because it can be cyclic), but it's a bad way to learn how the ast works. libclang conflates and leaves out the various node types in the clang ast. Read <a href="https://clang.llvm.org/docs/InternalsManual.html#the-ast-library">the section on the ast library in the internals manual</a> and take a look at <a href="https://clang.llvm.org/docs/IntroductionToTheClangAST.html">this page/talk</a> for an okay introduction. libclang uses this api to traverse the nodes in the ast and get information on the nodes which currently have a representation in C. <em>Just because something is accessible in the clang api, doesn't mean it is accessible in libclang.</em>
+    </p>
+    <h4>The Parts</h4>
+    <p>
+        <a href="https://clang.llvm.org/docs/LibClang.html">The official tutorial</a> gives a good overview of the important types in the clang ast and is eorth a read. The centerpiece type is <code>CXCursor</code>. These point to a node in the ast. There are diffent kinds of nodes, described by <code>CXCursorKind</code>. <a href="https://clang.llvm.org/doxygen/group__CINDEX.html#gaaccc432245b4cd9f2d470913f9ef0013">Some have documentation and some don't</a>, but searching the clang api docs for a type with a similar name can be very insightful. An important kind is <code>CXCursor_Unexposed<thing></code>. This means the node isn't exposed to libclang even though it does exist. These unexposed nodes will still be listed when doing <code>clang -Xclang -ast-dump src-file</code> which can be confusing. It can be useful to make a traversal using libclang instead of purely relying on the clang ast dump to see what is exposed and what isn't.
     </p>
   </div>
 </body>
