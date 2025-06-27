@@ -36,6 +36,7 @@
     <ul>
       <li>e-graph idea: I wonder if you could use like enumero to generate a bunch of rewrite rules. Then find which rules create similar looking graphs. Group those together and then make a phased optimization pass saturating each of these groups. The interesting part here is finding cool graph groupings which capture properties we care about. I think comp bio people have to think about this type of thing and maybe other people.</li>
       <li>tui graph explorer with nice zoom in animations, node focus, and api so it can be used like a menu and keyboard based. Probably should also support graphviz.</li>
+      <li>One way to get the arcade style shootem up to work with an rpg style overworld might be to make the game modal. There is a battle mode in which enemies, bullets, and the player are iconographic and top down. This is to allow the crazy bullet-hell style patters which I think are really cool but can be hard to work in a 3/4 perspective. It also might make sense to lock the camera in this mode. However, the world itself's geometry doesn't change. Just sprites turn into flat polygons and backgrounds fade black. The world itself can then be bog standard 3/4 rpg, but the combat top down. Alternate solutions are just make it work in 3/4 like hyperlight drifter, but imo this sacrifices enough clarity that dense enemy patterns become difficult. Still works, but makes a different game.</li>
     </ul>
   </div>
 </body>
