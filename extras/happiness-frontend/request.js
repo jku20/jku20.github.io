@@ -38,6 +38,8 @@ form.addEventListener(
     const data = new FormData(form);
     const happiness = data.get("happiness");
     const comment = data.get("comment");
+    const timezone = (new Date()).getTimezoneOffset() * 60000;
+    const date = (new Date(Date.now() - timezone)).toISOString().slice(0, 10);
     if (!happiness) {
       window.alert("please select happiness");
     } else {
@@ -51,7 +53,8 @@ form.addEventListener(
         },
         body: JSON.stringify({
           "value": happiness,
-          "comment": comment
+          "comment": comment,
+          "timestamp": date
         })
       })
       .then(response => {
