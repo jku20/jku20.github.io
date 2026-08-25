@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="../../template/template.css" type="text/css">
+    <link rel="icon" href="favicon.ico">
+    <title>Notes</title>
+</head>
+<body>
+  <div id="side">
+    <h1>Papers</h1>
+    <p>Notes on Papers</p>
+  </div>
+  <div id="main">
+    <h2>HIDE: A Hardware Intelligent Description Environment (2006)</h2>
+    <p>
+      This paper is old at this point, 20 years old, but it does some still lacking among modern HDLs: proper structural descriptions.
+      It's writing in the context of Verilog, VHDL, System-C, and stuff like that which is still largely the norm, though I think this is before
+      many of the functional embedded HDLs like Clash or Spade or Chisel. HIDE is itself most similar to these functional HDLs, but differs in being
+      based on logic programming instead of functional programming (though of course those disceplines are very related). The most similar piece of
+      work to this is Lava.
+    </p>
+    <p>
+      The primary abstraction of HIDE is a block. These can be 2d rectangles or 3d prisms where each side has a list of named, directional ports.
+      HIDE includes separate special ports called controls on blocks for stuff like reset and clock which are used by like every component.
+      Many ports can be collected together into busses. This is how you represent multi-bit signals.
+    </p>
+    <p>
+      Blocks are composed in the obvious way, horizontally, vertically and above or below (for 3d blocks). Circuits are 2d, however so 3d blocks
+      end up getting projected onto the plane as either a horizontal or vertical line. Blocks are wired together by matching input and output ports
+      by their number/column. For example, in 2d with two blocks horizontally layed out, the first output port from the left block's east side would
+      connect to the first input port on the right block's west side. This works the same in 3d except now there are columns. It's also possible to
+      override this default mapping with an <code>nc</code> function but you still are connecting blocks to adjacent blocks. Sometimes you might have
+      blocks A -> B -> C and want to connect a port in A to C. Then you can use <code>nc([..., (i, thru), ...])</code> to add an input port to B's
+      west side which passes through to a port at the end of B's port list on its east side. This this the gist of it, but there are a bunch of other
+      constructors which basically allow you to do whatever connections you want. They also allow you to insert "free action" computation like shifts.
+    </p>
+    <p>
+      There is a relatively straightforward mapping from the Prolog circuit definition to tree structure called a configuration data structure (CDS).
+      The CDS contains stuff like width, height, location, ports, and child blocks.
+    </p>
+    <p>
+      The simple compilation scheme does very well, probably because its equivelent to just doing a full custom layout. Especially for the
+      systolic gemm example they give. I'd really wonder how well this works compared to current EDA tools. I'm also kind of sketch with their
+      utilization numbers. Sure they have way less utilization and get a similar fmax but I'd bet that's just because they have a small design.
+      I'd like to see if this pattern continues with designs closer to FPGA utilization. I'd doubt the EDA tools care too much about minimizing
+      utilization as much as they care just getting the design to fit.
+    </p>
+    <p>
+      This effectively forces users to write code purely structurally. The authors do a good job totally ignoring most control logic.
+      Writing an FSM in HIDE is probably pain. This also might be skill issue, but I find HIDE totally illegible when trying to understand it.
+      Still, it's cool that this seems to show some sort of structural model isn't totally dead on arrival. I think the main interesting bit here
+      is the automatic port connections. This is super important for readability and solves one of the problems in many HDLs where you have a bunch
+      of silly wire names everywhere. This is partially solved by HDLs which allow modules to "return" values (e.g. spade or some of the embedded
+      functional ones), but in that case doesn't generalize easily: if you have multiple things which are logically outputs or form some handshake like
+      a rdy/val handshake, you have to wrap this output in some struct. This is sort of also the case in HIDE with busses, but I don't think you need
+      them nearly as much. The thing this doesn't do as well is being able to do <code>module().thing().other_thing()</code> as now you have general
+      graphs instead of linked lists. The implicit version with <code>h_seq</code> or <code>v_seq</code> kind of does this but not as well. This feels
+      like simply a limitation of prolog.
+    </p>
+  </div>
+</body>
