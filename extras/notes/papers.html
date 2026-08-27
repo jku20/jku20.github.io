@@ -56,5 +56,69 @@
       graphs instead of linked lists. The implicit version with <code>h_seq</code> or <code>v_seq</code> kind of does this but not as well. This feels
       like simply a limitation of prolog.
     </p>
+    <h2>RapidStream IR: Infrastructure for FPGA High-Level Physical Synthesis</h2>
+    <p>
+      This paper is a follow up to a previous Rapidstream paper. The gist of that paper is to break HLS designs up into blocks with some defined
+      interface and then lay them out with ILP (I think). There are a lot of moving parts to this one, it is one of those papers describing a larger
+      project so it kind of enumerate a bunch of parts in an ecosystem of sorts.
+    </p>
+    <p>
+      One difference the authors try to make is to frame themselves as not HLS but something my 2 minutes of searching seems to tell me is something
+      the authors made up, high-level physical synthesis (HLPS). The dichotomy the authors try to make is HLS systems don't do a good job at
+      considering quirks of the underlying hardware (FPGAs in their case). For example, the AMD Versal VP1552 FPGA has multiple dies with slow die
+      to die communication. HLS wouldn't take into account these slow crossings, but HLPS does. If this is indeed what the authors are trying to say,
+      I think this is a pretty silly distinction.
+    </p>
+    <p>
+      The birds eye procedure the authors give for HLPS is first analyze a high level spec and look for connections between atomic modules which are
+      more tolerant to latency (e.g. they permit optimizations, e.g. piplining). This is done with heuristically looking at the spec and identifying
+      patterns which look like things like handshakes or valid protocols. The design is then partitioned such that each partition has latency tolerant
+      external ports (or as latency tolerant as possible). This is also just a bag full of heuristics and optimization I think. These partitions are
+      then placed with some metrics to lower congestion and finally routed. The paper focuses on the middle part, how to represent these partitions.
+    </p>
+    <p>
+      The IR is pretty straightforward. The primary has modules, named structures with ports, wires, and additional metadata. These modules can either
+      be leaf modules, which are atomic pieces of the design (e.g. IPs or RTL) or grouped modules, which contain a collection of other modules and
+      sepcify how those modules are wired together. Additional metadata can contain things like floorplan constraints, resource utilization, and other
+      useful things for optimization. One important special piece of metadata, given the name an interface, annotates a set of ports on the design
+      describing some relation they have, e.g. they are used with a piece of data to preform a rdy/val handshake. This is in part what is meant by
+      "latency tolerant" and is used for optimizations. In addition, there are a couple invariants which keep hte IR nice: wires connect precisely two
+      modules, submodules' ports connect to exactly one wire or constant, and all ports are connected.
+    </p>
+    <p>
+      One thing to note about this IR is much of the behavioral information is lost outside of references in leaf modules. The goal here is not to
+      totally specify designs but to serve as a medium for doing pnr hierarchically and to serve as a sort of lingua franca between different FPGAs.
+    </p>
+    <p>
+      The passes on the IR are relatively striaghtforward and used to implement the steps of HLPS the paper describes. There is a pass to wire together
+      imported leaf modules (it does this by creating a big router "aux" module). There are passes to infer interfaces, split leaf modules (e.g. the
+      monolithic aux module created when wiring together leaves). There are also flattening and unflattening passes and optimization passes. The paper
+      has details, but it do kind of just be a compiler. The main flow is load in the design. Uses pases to reconstruct hierarchy and partition it.
+      Then flatten the design (so it's more friendly to ILP), and use AutoBridge to do floorplanning. Finally, do the interconnect synthesis and insert
+      pipeline stages if need be.
+    </p>
+    <p>
+      Unsurprisingly, this does pretty good and can enable module level parallelism for synthesis. Improvements are among most metrics but especially
+      frequency. Maybe interestingly, but also intuitive is, the resource utilization is nearly identical. The benefit is atomic components are being
+      placed better, not like new logic or massive reductions in logic or things.
+    </p>
+    <p>
+      In my view, there is a lot of cool engineering work here, but the standout innovation is that extra "interface" bit of metadata annotating module
+      ports allowing them to be optimized in special ways if they have that annotation. This seems to do really well impoving fmax. That and
+      optimization towards placing each block. The future work mentions integrating this with RapidStream, which seems interesting, as making stuff
+      super parallel and higherarchical seems the way to go here. My mental model here is this is this is living in the world of tools which try to
+      figure out better way take a bunch of kind of disparate designs which can be (mostly) processed in parallel and wiring them together. Kind of
+      like what does linking look like lol. I wonder if you could properly design a high performance interface so you could do something kind of like
+      linking (like where you have a bunch of gds files with a bunch of placeholder connections on their ports and those get rewritten during "link
+      time" and there is some guarentee by the algorithm and file format that you hit timing and are DRC/LVS clean or whatever.
+    </p>
+    <p>
+      I do wish the paper went into a bit more detail about how these steps were actually implemented. I didn't see a huge amount on how the final
+      interconnects worked out, though it seems they were just written to somewhat structural verilog and fed into a normal pnr flow. This is a little
+      disapointing, because it leaves the big problem of "how to parallelize PnR" still pretty unexplored. Totally unrelated, but I wonder if you could
+      do elatic designs (e.g. elastic cgras) to get around this because maybe for some reason those are way easy to get timing closure for and compose.
+      But yeah, doing routing in pieces seems really hard. RapidStream of course proposes something (and it's mentioned integrating with it is future
+      work) but I don't know where that is. The website is down :cry:.
+    </p>
   </div>
 </body>
