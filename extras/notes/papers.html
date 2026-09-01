@@ -129,5 +129,47 @@
       binary s variables indexed. This makes it so you can't have inputs from multiple directions at the same time. Other than that, it did kind of
       just seems like an ILP. Overall solid paper, but I don't think super interesting to me right now.
     </p>
+    <h2>PLD: Fast FPGA Compilation to make Reconfigurable Acceleration Compatible with Modern Incremental Refinement Software Development</h2>
+    <p>
+      That title is long. But the idea is one probably any software engineer writing an accelerator for an FPGA has felt. The big idea of the paper is
+      pretty simple: split the reconfigurable area of an FPGA into a number of "pages" which can be configured indepenantly. The pages themselves are
+      connected by a network each page knows how to communicate with. The frontend compiling to this are C kernals connected together using a streaming
+      interface. That is, each C kernal is connected to others forming a dataflow graph (the system is inspired by Kahn Process Networks). Each kernal
+      is mapped to a page, and the FPGA is flashed with a network to allow these pages to communicate.
+    </p>
+    <p>
+      In order to support incremental refinement, there are multiple levels of "optimization" allowed for mapping the kernals to pages. -O0 is flashing
+      the page with a premade RISC-V softcore and then compiling the kernal to RISC-V. -O1 is compiling the kernal to verilog and flashing the page.
+      -O3 is basically just FPGA flow. As expected, -O0 takes seconds, -O1 takes tens of minutes, and -O3 takes a couple hours, and of course -O3 is
+      basically normal performance, -O1 is an order of magnitude worse, and -O0 is even more orders of magnitudes slower. Pretty straightforward at a high
+      level but the engineering work to actually make this a reality probably made at least one person loose their hair.
+    </p>
+    <p>
+      Some of the main takeaways here are this idea works, and the bottleneck tends to be the network facilitating communication between the kernals.
+      And, as expected the area demands tend to be higher. The most frustating part of this is that compiling each page still takes tens of minutes
+      except at -O0. -O0 is still super helpful because being able to test stuff on board to make sure things are wired up right is extrememly helpful,
+      but it's not great for trying to adjust stuff for performance. Though, maybe this isn't as much a thing for HLS anyway. My understanding is
+      making pages smaller to reduce compile times is for three main reasons:
+      <ul>
+        <li>FPGAs are heterogenious and there are only so many specific DSPs or BRAMs and things to put in different pages.</li>
+        <li>Each page has some boilerplate logic to communicate with the global network, so more pages means wasting more resourcses on this logic</li>
+        <li>Kernels are compiled to their own page, i.e. nodes in the compilation graph have their own page, so if pages are too small it's hard to map things.</li>
+      </ul>
+      This is very reasonable for FPGAs, but I wonder if this constraint could be lessened for ASICs. Though of course then the end goal is totally
+      different, getting a good enough approximation of a final PnR to tweak parts of a design for performance or area or power or other reasons.
+      In that case, the order of magnitude decrease in quality would probably not be good, though maybe it would be okay because per page the reduction
+      in quality is probably not much.
+    </p>
+    <p>
+      Overall, the idea seems to be in the same ballpark as some of the rapidstream stuff I've been reading: "HLS makes some dependency graph which
+      can be broken up into atomic blocks are wired together." A big difference here is done kind of "realtime" and incrementally with a static global
+      network. An important thing about stuff like this is it starts from HLS looking things which don't specify stuff as strictly as RTL descriptions.
+      For example, the model of computation here is higher level, thinking about parges blocking on other pages for data, instead of lower level "what
+      is happening to each register at every cycle." It's not totally clear how to bridge this gap if we wanted to do something like this for RTL.
+      It seems like some higher level interface is really what is needed and streaming interfaces are just really common in HLS. I wonder if there is
+      some precise way to characterize what an interface allowing this "hotswapping" of components would have to look like. I haven't thought very
+      hard about this so it might be kind of obvious. Well, certainly a streaming interface give enough wiggle room as described here. But yeah, cool
+      paper and intense seeming engineering.
+    </p>
   </div>
 </body>
